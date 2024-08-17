@@ -9,7 +9,7 @@ import 'package:provider_practice/provider/contact_provider.dart';
 import 'package:provider_practice/provider/stepper_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../model/contact.dart';
+import '../../model/contact.dart';
 import 'package:share_extend/share_extend.dart';
 
 class ContactDetails extends StatelessWidget {
@@ -196,7 +196,6 @@ class ContactDetails extends StatelessWidget {
                           "Text");
                     },
                     child: Text("Share")),
-                PopupMenuItem(child: Text("Hide")),
                 PopupMenuItem(
                     onTap: () {
                       showDialog(

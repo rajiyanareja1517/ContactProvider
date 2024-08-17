@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/contact_provider.dart';
-import '../provider/stepper_provider.dart';
+import '../../provider/change_theme_provider.dart';
+import '../../provider/contact_provider.dart';
+import '../../provider/platform_provider.dart';
+import '../../provider/stepper_provider.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -17,6 +19,12 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Contacts"),
         actions: [
+          IconButton(
+              onPressed: () {
+                Provider.of<PlatformProvider>(context, listen: false)
+                    .setIsIos();
+              },
+              icon: Icon(Icons.apple)),
           IconButton(
             onPressed: () {
               Provider.of<StepperProvider>(context, listen: false)
@@ -37,6 +45,67 @@ class HomePage extends StatelessWidget {
             },
             icon: const Icon(Icons.add),
           ),
+          PopupMenuButton<int>(
+            itemBuilder: (context) {
+              return [
+                // PopupMenuItem 1
+                PopupMenuItem(
+                  value: 1,
+                  // row with 2 children
+                  child: Row(
+                    children: [
+                      Icon(Icons.light_mode),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Light")
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  // row with 2 children
+                  child: Row(
+                    children: [
+                      Icon(Icons.dark_mode),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Dark")
+                    ],
+                  ),
+                ),
+                // PopupMenuItem 2
+                PopupMenuItem(
+                  value: 2,
+                  // row with two children
+                  child: Row(
+                    children: [
+                      Icon(Icons.auto_mode),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("System")
+                    ],
+                  ),
+                ),
+              ];
+            },
+            // on selected we show the dialog box
+            onSelected: (value) {
+              // if value 1 show dialog
+              if (value == 1) {
+                Provider.of<ChangeThemeProvider>(context, listen: false)
+                    .changeThemeMode(1);
+              } else if (value == 2) {
+                Provider.of<ChangeThemeProvider>(context, listen: false)
+                    .changeThemeMode(2);
+              } else if (value == 3) {
+                Provider.of<ChangeThemeProvider>(context, listen: false)
+                    .changeThemeMode(3);
+              }
+            },
+          ),
         ],
       ),
       body: Consumer<ContactProvider>(
@@ -45,7 +114,7 @@ class HomePage extends StatelessWidget {
             children: contactProvider.allContact.map((e) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed('details',arguments: e);
+                  Navigator.of(context).pushNamed('details', arguments: e);
                 },
                 child: Card(
                   margin: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -85,7 +154,7 @@ class AlertBox extends StatelessWidget {
 
   ImagePicker imagePicker = ImagePicker();
   XFile? xFile;
-  String pickImagePath="";
+  String pickImagePath = "";
 
   @override
   Widget build(BuildContext context) {
@@ -204,8 +273,7 @@ class AlertBox extends StatelessWidget {
                         onTap: () async {
                           showDialog(
                               context: context,
-                              builder:
-                                  (context) {
+                              builder: (context) {
                                 return AlertDialog(
                                   title: Text(
                                     "Pick Image",
@@ -215,57 +283,37 @@ class AlertBox extends StatelessWidget {
                                   ),
                                   actions: [
                                     FloatingActionButton(
-                                      mini:
-                                      true,
-                                      onPressed:
-                                          () async {
-                                        xFile =
-                                        await imagePicker.pickImage(
-                                          source:
-                                          ImageSource.camera,
+                                      mini: true,
+                                      onPressed: () async {
+                                        xFile = await imagePicker.pickImage(
+                                          source: ImageSource.camera,
                                         );
-                                        if (xFile !=
-                                            null) {
-                                          pickImagePath =
-                                              xFile!.path;
+                                        if (xFile != null) {
+                                          pickImagePath = xFile!.path;
                                         }
 
-                                        Navigator.of(context)
-                                            .pop();
+                                        Navigator.of(context).pop();
                                       },
-                                      elevation:
-                                      3,
-                                      child:
-                                      Icon(
-                                        Icons
-                                            .camera_alt,
+                                      elevation: 3,
+                                      child: Icon(
+                                        Icons.camera_alt,
                                       ),
                                     ),
                                     FloatingActionButton(
-                                      mini:
-                                      true,
-                                      onPressed:
-                                          () async {
-                                        xFile =
-                                        await imagePicker.pickImage(
-                                          source:
-                                          ImageSource.gallery,
+                                      mini: true,
+                                      onPressed: () async {
+                                        xFile = await imagePicker.pickImage(
+                                          source: ImageSource.gallery,
                                         );
-                                        if (xFile !=
-                                            null) {
-                                          pickImagePath =
-                                              xFile!.path;
+                                        if (xFile != null) {
+                                          pickImagePath = xFile!.path;
                                         }
 
-                                        Navigator.of(context)
-                                            .pop();
+                                        Navigator.of(context).pop();
                                       },
-                                      elevation:
-                                      3,
-                                      child:
-                                      Icon(
-                                        Icons
-                                            .image,
+                                      elevation: 3,
+                                      child: Icon(
+                                        Icons.image,
                                       ),
                                     ),
                                   ],
